@@ -16,10 +16,16 @@ describe 'flights index page' do
     visit '/flights'
   end
   it 'I see a list of all flight numbers, the name of the airline and the names of all passengers on that flight' do
-    save_and_open_page
     expect(page).to have_content("Flight: #{@flight_1.number} Airline: #{@frontier.name}")
     expect(page).to have_content("Passengers: #{@seth.name} #{@sam.name}")
     expect(page).to have_content("Flight: #{@flight_2.number} Airline: #{@delta.name}")
     expect(page).to have_content("Passengers: #{@jim.name} #{@josh.name}")
+  end
+
+  it 'I see a button to remove that passeneger whenc clicked the passenger is removed' do
+    expect(page).to have_button("Remove #{@seth.name}")
+    click_button("Remove #{@seth.name}")
+    expect(current_path).to eq("/flights")
+    expect(page).to_not have_content(@seth.name)
   end
 end
