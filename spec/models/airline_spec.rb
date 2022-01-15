@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Airline, type: :model do
   it { should have_many :flights }
+  it { should have_many(:passengers).through(:flights) }
 
   describe 'instance and class methods' do
     it '#adult_passengers' do
@@ -16,8 +17,12 @@ RSpec.describe Airline, type: :model do
       @josh = Passenger.create!(name: 'Josh', age: 17)
       @flight_pass_3 = FlightPassenger.create!(flight_id: @flight_2.id, passenger_id: @jim.id)
       @flight_pass_4 = FlightPassenger.create!(flight_id: @flight_2.id, passenger_id: @josh.id)
-      @flight_pass_5 = FlightPassenger.create!(flight_id: @flight_2.id, passenger_id: @seth.id)
-      expect(@frontier.adult_passengers).to eq([@seth, @sam, @jim])
+      @flight_pass_5 = FlightPassenger.create!(flight_id: @flight_2.id, passenger_id: @sam.id)
+      @flight_3 = @frontier.flights.create!(number: '3', date: '1/2/22', departure_city: 'Denver', arrival_city: 'DC')
+      @flight_pass_6 = FlightPassenger.create!(flight_id: @flight_3.id, passenger_id: @sam.id)
+      @flight_pass_7 = FlightPassenger.create!(flight_id: @flight_3.id, passenger_id: @seth.id)
+
+      expect(@frontier.adult_passengers.map { |passenger| passenger.name }).to eq([@sam.name, @seth.name, @jim.name])
     end
   end
 end
